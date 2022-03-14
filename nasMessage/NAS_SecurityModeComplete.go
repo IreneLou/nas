@@ -31,7 +31,9 @@ func (a *SecurityModeComplete) EncodeSecurityModeComplete(buffer *bytes.Buffer) 
 	if a.IMEISV != nil {
 		binary.Write(buffer, binary.BigEndian, a.IMEISV.GetIei())
 		binary.Write(buffer, binary.BigEndian, a.IMEISV.GetLen())
-		binary.Write(buffer, binary.BigEndian, a.IMEISV.Octet[:a.IMEISV.GetLen()])
+		tmp := a.IMEISV.Octet[:a.IMEISV.GetLen()]
+		tmp[a.IMEISV.GetLen()-1] |= 0xf0 // endmark
+		binary.Write(buffer, binary.BigEndian, tmp)
 	}
 	if a.NASMessageContainer != nil {
 		binary.Write(buffer, binary.BigEndian, a.NASMessageContainer.GetIei())
